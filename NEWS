@@ -1,0 +1,70 @@
+CHANGES IN VERSION 2.1x.0
+-------------------------
+
+NEW FEATURES
+
+    o extractBamRegions
+
+    o rangeSegCount class
+
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o The functions reader2fastq and range2fastq will be deprecated soon and
+	replaced by readerToFastq and rangeToFastq
+
+BUG FIXES
+
+    o Corrected bug in gapSiteList.h which caused crashes in multiply repeated merges
+
+    o Changed Variable type from Integer to unsigned long long int in
+	C functions where alignment numbers are carried.
+
+    o Corrected a PROTECT / UNPROTECT imbalance which showed up incidentally.
+
+
+
+CHANGES IN VERSION 2.10.0
+-------------------------
+
+NEW FEATURES
+
+    o Added support for Description (DS) segment in header program
+
+    o Added support for Supplementary Alignment (0x800) segment in alignment FLAG
+
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o The functions create.index, load.index and create.idx.batch will
+	be deprecated soon and replaced by createIndex, loadIndex and
+	createIdxBatch.
+
+BUG FIXES
+
+    o Fixed erroneous FLAG re-setting algorithm
+
+    o Enclosed range2fastq example in "\dontrun{}" in order to avoid
+	checking errors (File could not be opened) on OSX snowleopard
+
+    o Replaced rand() by runif() in (samtools) ksort.h
+	(due to NOTE in devel CRAN win-builder:
+		"Compiled code should not call (...) the C RNG")
+
+CHANGES IN VERSION 2.9.14
+-------------------------
+
+NEW FEATURES
+
+    o Included this NEWS file and a ChangeLog file
+
+    o Added test directory (tests are executed on R CMD check)
+
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Extended plotAlignDepth function: Option for plotting of exon positions added
+
+BUG FIXES
+
+    o (none)
