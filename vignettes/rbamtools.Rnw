@@ -57,6 +57,8 @@
 \SweaveOpts{concordance=TRUE}
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
+% Prepare workspace
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 
 <<echo=FALSE>>=
 library(rbamtools)
@@ -64,7 +66,9 @@ library(xtable)
 options(width=60)
 @
 
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \section{Introduction}
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 
 BAM files are a important and powerful file format in Bioinformatics. This 
 package pursues several objectives:
@@ -92,11 +96,11 @@ The then current version of the samtools file format description was
 
 All file interactions are done via samtools. There is C-code which handle align 
 data for whole ranges and C-code for accumulation of information about 
-splice-sites from gapped aligns.\\
+splice-sites from gapped alignments.\\
 
 The R-part of the code contains objects which communicate directly with samtools
 for reading and writing files, managing of file-header data, managing data for 
-single aligns and functions which transform align data into data.frame format.
+single alignments and functions which transform align data into data.frame format.
 Additionally there are objects that calculate and keep align-gap information for
 whole BAM-files and to summarize align-gap data over several BAM-files.\\
 
@@ -123,12 +127,14 @@ Usually one BAM file contains align data from one biological probe where the
 read number is in the magnitude of 100 million reads. The size of the
 corresponding compressed files is in the range of 10 Gbyte. A very important
 feature of BAM files is that sorted BAM files can be indexed and indexed files
-allow random access. This allows very fast access to aligns that are located in
+allow random access. This allows very fast access to alignments that are located in
 arbitrary regions of the reference genome.\\
 
 The content of BAM files is divided in a header section and an alignment section.
 
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsection{The header section}
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 
 The header section contains the following information:\\
 \newline
@@ -156,7 +162,9 @@ All processing steps on BAM-header data work on the string representation.
 \rcl{rbamtools}-objects parse and compose strings from and to object slots which
 then can be accessed via script code.\\
 
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsubsection{The reference sequence dictionary}
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 
 The reference sequence dictionary section contains a list of reference sequences
 (usually chromosomes). Off the six fields (declared in the SAM file format
@@ -175,8 +183,9 @@ specification) usually only two are used:\\
 The reference sequence dictionary section misses an index entry (refid) which 
 is used in alignment structures and is described below in ~\ref{sbsec:refid}.
 
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsection{The alignment section}
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 
 The alignment section contains a series of align datasets. Each align describes
 the coordinates of the identified sequence matches in the reference sequence.
@@ -195,7 +204,9 @@ The information for each align basically consists of:\\
 \end{tabular}
 \end{center}
 
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsubsection{The RNAME identifier: refid} \label{sbsec:refid}
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 Although RNAME associates with a textual entry, usually this field contains a 
 number which identifies a sequence in the header section. To make things 
 complicated, RNAME is a \textit{0-based} sequential identifier which is not 
@@ -207,8 +218,9 @@ functions in this package that automatically generate and use this id. The refid
 value is used by the \texttt{samtools} library as sequence identifier in 
 align-structures and for defining ranges in index based random access.\\
 
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsubsection{Position}\label{sbec:pos}
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 The position entry gives the align start position. In order to check the analogy
 between query and reference sequence see the given position in refid defined 
 string.\\
@@ -247,7 +259,9 @@ The \rcl{bamGapList} objects which operate on align gaps contain
 \textit{1-based} positions. So, overlapping with annotation data, 
 can be done without correction.\\
 
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsubsection{Navigation on reference sequence}\label{sbec:dir}
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 
 Printing the reference sequence results in characters that are ordered from left
 to right in ascending order of their position coordinate (consistent with 
@@ -258,8 +272,9 @@ higher coordinates are assumed to be on the \textit{right} side.\\
 So, for genes coding on the (+) strand, \textit{left} would be synonymous to 
 \textit{upstream} and \textit{right} would be synonymous to \textit{downstream}.
 
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsubsection{CIGAR string}
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 Alignments algorithms usually tolerate to some extend inexact matching. The type
 of matching is described in the CIGAR string (see ~\cite{sam} 1.4, Nr. 6). 
 The CIGAR string is made up of CIGAR-items. A CIGAR-item consists of a integer
@@ -316,9 +331,9 @@ in RNA-seq). It will give the entries \texttt{position=3} and
 We see the alignment gap (GTCCCAG). From the 'GT' and 'AG' at the gap
 boundaries, one can assume that this splice-site is on the (+) strand.
 %
-%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsection{Gapped alignments}
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 A special focus of functionality inside this package are Alignment gaps. 
 Alignment gaps in RNA-seq experiments are viewed as phenomenons that rely on 
 biological splicing mechanisms during protein-biosynthesis and the resulting
@@ -343,10 +358,11 @@ exon-intron structure of the genome.
 \vspace{1 em}
 \newline
 
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsection{Gap-sites}
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 Gap-sites are alignment gaps (=gap-regions) that are shared by one or more 
-aligns. The nucleotides on the reference sequence that are skipped in the 
+alignments. The nucleotides on the reference sequence that are skipped in the 
 alignment (i.e. the reference region which is depicted by "N" cigar items) 
 form the gap-region.\\
 Gap-sites are also characterized by the fact that they are bordered by 
@@ -356,7 +372,7 @@ that make up the framing M-segments. The calculated derived values on gap-sites
 therefore center on three measures:\\
 %
 \begin{itemize}
-    \item The number of aligns that define the gap-site.
+    \item The number of alignments that define the gap-site.
     \item The Length of the framing M-segments.
     \item The number of different length values in the framing M-segments.
     \item The number of alignments (probes, number of BAM-files) in which the
@@ -375,8 +391,8 @@ In order to describe and illustrate the parameters that are calculated and kept
 within this package we show the following example:
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
-
 \subsubsection{Example}
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 The following table example shows a short reference sequence and three different
 alignments that define a gap-site. The reference nucleotides that consitute the 
 gap-region are printed in red:\\
@@ -419,7 +435,7 @@ For these parameters we have values in the example:\\
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsubsection{Gap-site coordinates}
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 For each gap-site, \texttt{localisation-coordinates} are defines as:
 \begin{itemize}
     \item \textbf{refid} (reference sequence identifier)
@@ -433,7 +449,7 @@ For each gap-site, \texttt{localisation-coordinates} are defines as:
     %
 \end{itemize}
 \vspace{1 em}
-We call all aligns that share identical localisation-coordintates 
+We call all alignments that share identical localisation-coordintates 
 \texttt{gap-site-defining-aligns}. In order to derive a lower boundary for the
 size of the adjacent exons are calculated:
 \begin{itemize}
@@ -477,10 +493,10 @@ The associated numeric values for the shown example are:\\
 %
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsubsection{Quantification of align numbers}
-%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 The number of gap-site-defining-aligns are quantified in: 
 \begin{itemize}
-    \item \textbf{nAligns}, the number of aligns that define the gap-site.
+    \item \textbf{nAligns}, the number of alignments that define the gap-site.
     \item \textbf{nProbes}, the number of alignments (BAM-files) in which this
         gap-site is found.
 \end{itemize}
@@ -489,7 +505,7 @@ In the present example, the resulting values are nAligns=3 and nProbes=1.
 %
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsubsection{Quantification of informational support for gap-site's}
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 In order to quantify the information content for each gap-site \texttt{lcl} and 
 \texttt{mcl} values are stored as single byte values inside of an unsigned 
 long long integer. We define \texttt{n} as the number of bytes they contain.\\
@@ -515,7 +531,7 @@ values are placed in descending order.
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsubsection{Gap quality score (gqs)}
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 The gap quality score is calculated as
 \begin{align}
     gqs &= 10   \times \frac{nlstart}{n} \quad \frac{2 qsm}{4}\\
@@ -547,7 +563,7 @@ and ends with the description of more complex containers.
 %
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsection{Included example files within rbamtools}
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 There are two example files included which are located in the '/inst/extdata' 
 subdirectory of the package installation site. The directory contains a sorted
 BAM file 'accepted\_hits.bam' and the corresponding index file 
@@ -556,18 +572,18 @@ BAM file 'accepted\_hits.bam' and the corresponding index file
 They were produced (using the \rfc{extractRanges} function) from a RNA-seq
 experiment. A human probe was sequenced using an Illumina Hiseq sequencer. 
 Fastq-reads were aligned with tophat against homo sapiens UCSC reference genome.
-Complex aligns (i.e. aligns with nCigar > 1) were extracted for genes KLHL17 
-(chr1) and SNRNP25 (chr16). The BAM file contains 3333 aligns.
+Complex alignments (i.e. alignments with nCigar > 1) were extracted for genes KLHL17 
+(chr1) and SNRNP25 (chr16). The BAM file contains 3333 alignments.
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsection{Reading and writing access}
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 Immediate reading and writing access is provided by \rcl{bamReader} and
 \rcl{bamWriter} Objects.
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsection{bamReader}
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 An object of class bamReader is constructed and returnd by the function 
 \rcl{bamReader} in the following way:
 <<echo=TRUE>>=
@@ -578,7 +594,7 @@ reader <- bamReader(bam)
 @
 %
 An opened bamReader can be used to access the BAM header section and to read
-aligns sequenitally. \rcl{bamReader} can also be used to sort and index BAM 
+alignments sequenitally. \rcl{bamReader} can also be used to sort and index BAM 
 files.\\
 %
 Sorting large BAM files requires some time and produces intermediate files. So
@@ -626,7 +642,7 @@ reader <- bamReader(bam, idx=TRUE)
 %
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsection{Tabled reference sequences: \rcl{getRefData}}
-%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 A data.frame with the reference sequences contained in the BAM header can be
 obtained with:
 <<echo=TRUE>>=
@@ -634,11 +650,11 @@ getRefData(reader)
 @
 The returned data.frame contains in the first column (ID) the mentioned 
 refid~\ref{sbsec:refid} value which is not part of the header but uses as 
-identifier for aligns and ranges.
+identifier for alignments and ranges.
 %
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsection{bamWriter}
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 For creation of a \rcl{bamWriter} object, a \rcl{bamHeader} and a filename must
 be given. The most convenient way of obaining a \rcl{bamHeader} class is 
 retrieving one from an opened \rcl{bamReader} object.
@@ -646,11 +662,11 @@ retrieving one from an opened \rcl{bamReader} object.
 <<eval=FALSE>>=
 header <- getHeader(reader)
 writer <- bamWriter(header,"test.bam")
-# Write aligns using bamSave
+# Write alignments using bamSave
 bamClose(writer)
 @
 %
-Aligns can be written to a BAM file either from single instances of 
+alignments can be written to a BAM file either from single instances of 
 \rcl{bamAlign}'s or from whole \rcl{bamRange} objects.
 
 
@@ -665,7 +681,7 @@ The content of BAM files can be divided in \texttt{header} section and
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsection{Structures for header section}
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 The complete header information (in binary representation) can be retrieved from
 a BAM file with the function \texttt{getHeader}. An object of this type is 
 needed for creation of a \texttt{bamWriter} object.\\
@@ -724,8 +740,8 @@ header <- bamHeader(bh)
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsection{Structures for alignment section}
-
-Single aligns can be retreaved from opened reader via \rfc{getNextAlign}:
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
+Single alignments can be retreaved from opened reader via \rfc{getNextAlign}:
 <<>>=
 align <- getNextAlign(reader)
 @
@@ -817,7 +833,7 @@ unmapped(align) <- TRUE
 %
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsubsection{Creating bamAlign objects from scratch}
-%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 The {bamAlign} function can be used to create \rcl{bamAlign}
 objects from scratch:
 <<>>=
@@ -844,22 +860,22 @@ written to a BAM-file via \rcl{bamWriter}.
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsection{Align lists for specific reference regions: bamRange}
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \rcl{bamRange} objects manage a list of \rcl{bamAlign}'s. As BAM files usually
 contain alignment results against a reference-genome, \rcl{bamRange} objects
-contain list of all aligns that match between a given start and stop position on
+contain list of all alignments that match between a given start and stop position on
 a given chromosome. Region coordinates are thereby defined by a 
 refid~\ref{sbsec:refid} and a start and stop position. 
 
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsubsection{Reading bamRange from bamReader}
-%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 In order to create a bamRange object, an index-initialized \rcl{bamReader}
 object and a numeric coordinates-vector of length three are passed to the
 \rcl{bamRange} function.\\
 \\
-There are several ways to provide the coordinates for which the aligns are to 
+There are several ways to provide the coordinates for which the alignments are to 
 be retrieved. The first way is to specify a circumscribed genomic region
 (e.g. where a gene of interest is located). The names for the coordinates are
 not required and only added for explanational purposes:
@@ -916,7 +932,8 @@ getAlignRange(range)
 
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
-\subsubsection{Accessing aligns in bamReader}
+\subsubsection{Accessing alignments in bamReader}
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 
 \rcl{bamReader} objects keep a list of \rcl{bamAlign} objects. The objects can
 sequentially accessed or a data.frame with the align data can be retrieved.
@@ -955,15 +972,15 @@ rdf <- as.data.frame(range)
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsection{gapList}
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \rcl{gapList} objects represent a list of align gaps. They contain one record 
 for single each align-gap present in align data. Each align-gap can be linked 
 to a single align in the BAM file (via refid and position coordinates).\\
 \\
 The function \rfc{gapList} takes an open and indexed instance of \rcl{bamReader}
 and a set range coordinates (refid,start,stop). The function will scan all 
-aligns that are overlap with the given range in the opened BAM file for gapped
-aligns.\\
+alignments that are overlap with the given range in the opened BAM file for gapped
+alignments.\\
 \\
 For every contained align gap, the refid and the position of the align, the
 match length on both sides (\verb|left_cigar_len|, \verb|right_cigar_len|) and 
@@ -984,7 +1001,7 @@ The columns 4 and 9 contain the type of the adjacent cigar items
 \\
 The \rfc{size} function returns the number of gaps contained in the object. 
 The functions \rfc{nAligns} and \rfc{nAlignGaps} return the total number of
-aligns and the number of gapped aligns in the scanned range respectively:
+alignments and the number of gapped alignments in the scanned range respectively:
 %
 <<eval=FALSE>>=
 size(gl)
@@ -994,12 +1011,11 @@ nAlignGaps(gl)
 
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
-
 \subsection{gapSiteList}
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \rcl{gapSiteList} objects contain pooled align-gap information. The single gaps
 are condensed by refid, left-stop and right-start. So each combination of 
-coordinates appears only once in the list. The number of aligns in which each
+coordinates appears only once in the list. The number of alignments in which each
 gap has been found is counted into the value \texttt{nAligns}.\\
 \\
 Two \rcl{gapSitList} objects can be merged to one. The basic coordinates of the
@@ -1046,14 +1062,13 @@ head(df)
 
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
-
 \subsection{bamGapList}
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \rcl{bamGapList} Objects are designed to contain information about gap-sites for
 a complete BAM file (i.e. for all refid's). \rcl{bamGapList}'s can be merged, so
 it's possible to cumulate information about gap-sites from a large number of 
 BAM files (e.g. 50). As the whole collection and merging process is done in C, 
-the whole process usually runs with a processing rate > 1.000.000 aligns/sec 
+the whole process usually runs with a processing rate > 1.000.000 alignments/sec 
 (on a desktop machine).
 %
 <<>>=
@@ -1067,8 +1082,9 @@ dfr <- as.data.frame(bsl)
 head(dfr)
 @
 
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \subsubsection{readPooledBamGaps}
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 The two functions
 \begin{itemize}
     \item readPooledBamGaps
@@ -1113,20 +1129,162 @@ plot(table(rpdf$gqs), type="h", las=1, bty="n", lwd=2,
 
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
-% Miscellaneous functions
+\section{Alternative approaches for analyis of splicing events}
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
+\subsection{Bioconductor alternative to 'readPooledBamGaps'}
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
+Using Bioconductor alignment numbers on gap sites as well as number of 
+samples in which gap sites are found can be counted. We show an example
+implementation. The function can be evoked by simply providing a vector
+of BAM file names (but assumes that associated *.bam.bai BAM index 
+files are present).
+
+<<eval=FALSE>>=
+scanGapSites <- function(bam, yieldSize=1e6, mc.cores=2)
+{
+    require(Rsamtools)
+    require(GenomicAlignments)
+    
+    mc.cores <- as.integer(mc.cores)
+    
+    # Function will be called by mclapply
+    doScanBam <- function(bamFile)
+    {
+        open(bamFile)
+        
+        # Create empty container.
+        gPos <- GRanges()
+        
+        # Fill container by processing 'yieldSize' reads at a time
+        while(
+            sum(
+                elementLengths(
+                    records <- scanBam(
+                                bamFile,
+                                param=ScanBamParam(
+                                    flag=scanBamFlag(isUnmappedQuery=FALSE),
+                                    what=scanBamWhat()[c(3, 5, 8)]
+                                    )
+                                )[[1]]
+                    )
+            ) > 0
+        ){
+            
+            nOps <- cigarRangesAlongReferenceSpace(records$cigar,ops="N")
+            sel <- elementLengths(nOps) != 0
+            gPos <- c(gPos, 
+                        GRanges(seqnames=rep(records$rname[sel], 
+                                            elementLengths(nOps)[sel]),
+                                            ranges=unlist(shift(nOps[sel], 
+                                            records$pos[sel]))
+                            )
+                    )
+        }
+        close(bamFile)
+        # Return all gap positions
+        return(gPos)
+    }
+    
+    cat("[scanGapSites] Processing", length(bam), "Files.\n")
+    
+    
+    bamFileList <- BamFileList(bam, yieldSize = yieldSize)
+    gList <- mclapply(bamFileList, doScanBam)
+    
+    sz <- object.size(gList)
+    bm<-Sys.localeconv()[7]
+    cat("[scanGapSites] Collected object of size", 
+            format(as.numeric(object.size(gList)), big.mark=bm),
+            "bytes.\n")
+    
+    # - - - - - - - - - - - - - - - - - - - - - - - - - #
+    # Get all unique positions across all samples
+    # - - - - - - - - - - - - - - - - - - - - - - - - - #
+    uPos <- unique(Reduce("c", gList))
+    
+    # - - - - - - - - - - - - - - - - - - - - - - - - - #
+    # Create the count table by 
+    # transforming the ranges into character strings.
+    # - - - - - - - - - - - - - - - - - - - - - - - - - #
+    ref <- paste(seqnames(uPos), start(uPos), end(uPos), sep="-")
+    
+    # Will be called by mclapply
+    doTable <- function(grng, ref)
+    {
+        tab <- table(paste(seqnames(grng), start(grng), end(grng),sep="-"))
+        tab[match(ref,names(tab))]
+    }
+    
+    count.table <- do.call("cbind", 
+                    mclapply(gList, doTable, ref, mc.cores=mc.cores))
+    rownames(count.table) <- ref
+    
+    cat("[scanGapSites] Number of sites:", 
+            format(nrow(count.table), big.mark=bm),
+            ".\n")
+    
+    cat("[scanGapSites] Finished.\n")
+    return(count.table)
+}
+@
+
+The \textit{scanGapSites} function offers speed enhancement by parallel
+processing and by that may reach similar processing times as the 
+\textit{readPooledBamGapDf} function.
+While multiple chunks of alignment data are loaded into the working memory
+demand will be in the range of some Gigabyte (depending on yieldSize).
+
+This function does not provide information on the size of the exonic range
+which is covered by the alignment. Also, a quality value similar to the 
+\textit{gqs} can not be calculated retrospectively.
+
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
+\subsection{Direct import of Junction positions from Aligner}
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
+The RNA-seq aligners TopHat and STAR provide information on identified
+splice sites in their output files. The Bioconductor \textit{GenomicAlignments}
+package provides functions for direct import of this information.
+
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
+\subsubsection{STAR aligner}
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
+The STAR aligner \cite{pmid23104886} produces a tab separated file where
+positions of alignment gaps as well as number of uniquely and multi-mapping
+reads and a code for the intron motif is produced (SJ.out.tab file).
+
+The content of these files can directly be imported into R usign the
+\textit{readSTARJunctions} method.
+
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
+\subsubsection{TopHat aligner}
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
+TopHat produces a \textit{junctions.bed} file where each junction is 
+represented in form of two connected BED blocks. 
+The content of the \textit{junctions.bed} file can be read using the 
+\textit{readTopHatJunctions} function.
+
+Both tables can be used to obtain candidate locations for splice sites which
+also allows fast collection. For further validation of putative splicing 
+events, additional information may be necessary, e.g. more than just two intronic 
+nucleotide positions or qualification of the alignment gap postion by the gqs.
+
+
+
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
+% Miscellaneous functions
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \section{Miscellaneous functions}
 
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
-
 \subsection{bamCount and bamCountAll}
-
-The {bamCount} counts aligns and CIGAR-items in align ranges defined
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
+The {bamCount} counts alignments and CIGAR-items in align ranges defined
 by coordinates. The function returns a named integer vector of length 10.\\
 \\
-The {bamCountAll} counts aligns and CIGAR-items for whole BAM-files
+The {bamCountAll} counts alignments and CIGAR-items for whole BAM-files
 (represented by a \rcl{bamReader}). The function optionally takes a
 \code{verbose} argument which controls the textual output during runtime. The
 function returns a \rcl{data.frame}. Each line contains counts for one 
@@ -1151,9 +1309,8 @@ xtable(count, digits=0)
 
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
-
 \subsection{countNucs}
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 The {countNucs} counts occurrence of the nucleotides ACGT in 
 \rcl{bamAlign} and \rcl{bamRange} objects. An integer vector of length 4 
 is returned. The names give the nucleotide which is counted at each position. 
@@ -1174,9 +1331,8 @@ objects.
 
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
-
 \subsection{nucStats}
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \paragraph{nucStats for bamReader} The {nucStats} function counts 
 occurrence of the nucleotides ACGT in whole BAM files via opened 
 \rcl{bamReader} objects. Any other character values are subsumed in the
@@ -1207,9 +1363,8 @@ xtable(ncs, digits=c(0, 0, 0, 0, 0, 0, 0, 2, 2))
 
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
-
 \subsection{createIdxBatch}
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 The {createIdxBatch} is intended to create index files for a batch 
 of given BAM-files. The names of the created BAM-index files can optionally be
 added. The standard name for BAM-index files is the name of the BAM file plus
@@ -1229,27 +1384,26 @@ createIdxBatch(bam)
 
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
-
 \subsection{readerToFastq, rangeToFastq}
-
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 \paragraph{readerToFastq:} The {readerToFastq} and 
 {rangeToFastq} take (optionally random subsets) of whole BAM-files
 (via \rcl{bamReader}) or selected ranges (via \rcl{bamRange}) and copy 
-aligns to fastq files.\\
+alignments to fastq files.\\
 \\
-For handling of aligns inside whole BAM-files, use the {readerToFastq} 
-function. Aligns are read from BAM files via {getNextAlign}. For an
+For handling of alignments inside whole BAM-files, use the {readerToFastq} 
+function. Aalignments are read from BAM files via {getNextAlign}. For an
 opened file, there is a pointer to the last retrieved align kept. 
-So multiple calls to {getNextAlign} will retrieve subsequent aligns.\\
+So multiple calls to {getNextAlign} will retrieve subsequent alignments.\\
 \\
 This comes into play when there are precedent calls to {getNextAlign}
 or a subset has been drawn via a given logical vector. When a logical vector is
 given, there will be a call to {getNextAlign} for every entry in the 
-vector. The function then returns the number of checked aligns.\\
+vector. The function then returns the number of checked alignments.\\
 \\
-When EOF is reached before the vector is processed, the number of checked aligns
+When EOF is reached before the vector is processed, the number of checked alignments
 is smaller than the length of the given logical vector. When no logical vector
-is given, the function returns the number of written aligns.
+is given, the function returns the number of written alignments.
 <<eval=FALSE>>=
 reader <- bamReader(bam)
 readerToFastq(reader, "out.fastq")
@@ -1261,10 +1415,10 @@ readerToFastq(reader, "out_subset.fastq", which=index)
 @
 
 
-\paragraph{rangeToFastq:} The function  {rangeToFastq} writes all aligns
+\paragraph{rangeToFastq:} The function  {rangeToFastq} writes all alignments
 in a \rcl{bamRange} object into a compressed fastq file. Optionally, a 
 logical vector (where length must be equal to size of range) can be given. In 
-this case only the depicted aligns are copied into the fastq file and the 
+this case only the depicted alignments are copied into the fastq file and the 
 remaining alings are skipped.
 %
 <<eval=FALSE>>=
@@ -1278,8 +1432,8 @@ rangeToFastq(range,"rg_subset.fq.gz",which=index)
 
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
-
 \subsection{Functions for reading and displaying Phred quality scores}
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 
 Phred quality scores Q are defindes as $Q=-10 log_{10} P$ where P is the base 
 calling error probability. 
@@ -1326,7 +1480,7 @@ in a given range.
 bamRange object. From the \rcl{bamRange} object, the range is extracted and for
 each nucleotide position whithin this range the numbers of align matches are 
 calculated. When \rcl{alignDepth} is called wich \robj{gap=TRUE}, the function
-counts aligns solely for gap-adjacent match regions (cigar-op's).\\
+counts alignments solely for gap-adjacent match regions (cigar-op's).\\
 
 Whe extract a \rcl{bamRange} for the WASH7: 
 
@@ -1365,7 +1519,6 @@ plotAlignDepth(ad, lwd = 2, xlim = xlim,
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
 % Covers rangeSegCount class
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
-
 \subsection{Functions for counting alignmnents in genomic segments}
 
 The \rcl{rangeSegCount} class counts alignment numbers in specified
@@ -1410,6 +1563,117 @@ plot(count~position, dfr, type="l",
         ylab="Alignment count",
         main="Number of alignments in genomic segments of 20 nucleotides size")
 @
+
+
+%% + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + %%
+%% Misalign errors
+%% + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + %%
+%
+\section{Misalign errors}
+%
+\subsection{Cause of misalign errors}
+In the samtools C library, alignment data is contained in \texttt{bam1\_t}
+structures. 
+Cigar data is stored in the \texttt{data} segment of \texttt{bam1\_t}
+structures which has type \texttt{unsigned char *} (1 byte). 
+The data data segments usually are accessed
+using pointers to \texttt{unsigned char} as shown below.
+%
+\begin{verbatim}
+bam1_t *align = bam_init1();
+unsigned char * data = align->data;
+\end{verbatim}
+%
+Cigar data has type \texttt{unsigned int} (4 bytes) which differs
+from the type size of \texttt{unsigned char}.
+%
+In order to retrieve cigar data from an alignment structure a type
+change has to be performed. On pointers, these type changes are called
+pointer casts.
+%
+The accessor for cigar data \texttt{bam1\_cigar} performs
+an implicit pointer cast in the following statment:
+%
+\begin{verbatim}
+unsigned int *cigar=align->data + align->core.l_qname;
+\end{verbatim}
+%
+Because there are usually multiple cigar items for each alignment, a
+cigar structure actually contains more than one value. Therefore
+the value pointed to is an array rather than a single value.
+%
+Values inside a C array are accessed via the index operator '[x]'
+(similar to R). The first value inside a cigar array is accessed using
+\begin{verbatim}
+unsigned int c = cigar[0];
+\end{verbatim}
+(unlike R where the first element has index 1).
+%
+In other words, the index operator k[x] refers to a memory location
+x-units away from the base address k. The unit size is the memory 
+demand of one element of the stored type.
+%
+By putting the example together we see that after
+\begin{verbatim}
+bam1_t *align = bam_init1();
+unsigned char * data = align->data + align->core.l_qname;
+unsigned int *cigar = data;
+\end{verbatim}
+the two expressions
+\begin{verbatim}
+data[4];
+cigar[4];
+\end{verbatim}
+point to different memory locations due to the implicit conversion during
+the assignment from data to cigar.
+
+For this ambiguity, there is no general rule defined in the C language
+definition, a so called \textbf{undefined behaviour} (UB) situation. 
+The result may depend on implementation and may vary between different
+operating systems for example between Debian Linux and SPARC.
+
+The accountable structures currently are present in all C implementations of
+samtools, for example in the current (Bioconductor) Rsamtools
+version\footnote{http://www.bioconductor.org/packages/release/bioc/html/Rsamtools.html}
+and in the current htslib version (0.2.0-rc8) on 
+GitHub\footnote{https://github.com/samtools/samtools}.
+
+
+%
+%% + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + %%
+%% Misalign causing code in htslib:
+%% ~/htslib/htslib-0.2.0-rc8/htslib/sam.h
+%% line 161: #define bam_get_cigar(b) ((uint32_t*)((b)->data + (b)->core.l_qname))
+%% Misalign causing code in Rsamtools:
+%% Rsamtools/src/samtools/bam.h:
+%% line 225: #define bam1_cigar(b) ((uint32_t*)((b)->data + (b)->core.l_qname))
+%% A good explanation for effects of unaligned memory access:
+%% http://askldjd.wordpress.com/2009/12/07/memory-alignment-problems/
+%% + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + %%
+%%
+%
+\subsection{Correction of misalign errors}
+%
+In rbamtools, we have corrected these misalign errors by a new \texttt{cigar}
+data member into \texttt{bam1\_t} structures and maintaining a 
+copy of cigar data there.
+%
+The implementation of this workaround requires changes in five functions: 
+The creator (\texttt{bam\_init1}) and destructor (\texttt{bam\_destroy1}), 
+the functions for copying  (\texttt{bam\_copy1}) and duplication 
+(\texttt{bam\_dup1}) and the accessor for cigar data (\texttt{bam1\_cigar)}.
+%
+Additionally, the samtools library has to be corrected at places where the own
+creator and destructor routines had not been deployed (e.g. in the 
+\texttt{bam\_sort\_core\_ext}  function in bam\_sort.c and in the 
+\texttt{bam\_index\_core} function in bam\_index.c).
+%
+This workaround is associated with a slight speed decrease of 6.7 \% but it 
+does not change file access and the programming interface. 
+It can be introduced into any current samtools version.
+%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
+
 
 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - %
